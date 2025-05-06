@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIFF May 16 Screenings</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2em; background: #f8f8f8; }
+    h1 { text-align: center; }
+    .film-card { background: white; margin: 1em auto; padding: 1em; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .title { font-size: 1.2em; font-weight: bold; }
+    .meta { color: #555; margin-top: 0.3em; }
+    .link { margin-top: 0.5em; display: inline-block; color: #0077cc; }
+  </style>
+</head>
+<body>
+  <h1>SIFF Screenings – May 16</h1>
+  <div id="screenings"></div>
+
+  <script>
+    fetch('may16_screenings.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('screenings');
+        data.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+        data.forEach(film => {
+          const card = document.createElement('div');
+          card.className = 'film-card';
+
+          const title = document.createElement('div');
+          title.className = 'title';
+          title.textContent = film.title;
+
+          const time = new Date(film.start_time);
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = `${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – ${film.location}`;
+
+          const link = document.createElement('a');
+          link.href = film.url;
+          link.className = 'link';
+          link.textContent = 'View Film Page';
+          link.target = '_blank';
+
+          card.appendChild(title);
+          card.appendChild(meta);
+          card.appendChild(link);
+
+          container.appendChild(card);
+        });
+      });
+  </script>
+</body>
+</html>
