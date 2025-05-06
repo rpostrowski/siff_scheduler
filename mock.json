@@ -1,0 +1,26 @@
+[
+  {
+    "title": "April",
+    "start_time": "2025-05-16T11:00:00-07:00",
+    "location": "SIFF Cinema Uptown",
+    "url": "https://www.siff.net/festival/april"
+  },
+  {
+    "title": "Bitter Gold",
+    "start_time": "2025-05-16T14:15:00-07:00",
+    "location": "SIFF Cinema Egyptian",
+    "url": "https://www.siff.net/festival/bitter-gold"
+  },
+  {
+    "title": "Dancing Queen in Hollywood",
+    "start_time": "2025-05-16T18:30:00-07:00",
+    "location": "SIFF Cinema Downtown",
+    "url": "https://www.siff.net/festival/dancing-queen-in-hollywood"
+  },
+  {
+    "title": "Monk in Pieces",
+    "start_time": "2025-05-16T21:00:00-07:00",
+    "location": "SIFF Cinema Uptown",
+    "url": "https://www.siff.net/festival/monk-in-pieces"
+  }
+]
