@@ -3,144 +3,168 @@
     "title": "April",
     "start_time": "2025-05-16T12:30:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/april"
+    "url": "https://www.siff.net/festival/april",
+    "duration_minutes": 134
   },
   {
     "title": "Bitter Gold",
     "start_time": "2025-05-16T13:00:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/bitter-gold"
+    "url": "https://www.siff.net/festival/bitter-gold",
+    "duration_minutes": 83
   },
   {
     "title": "Beef",
     "start_time": "2025-05-16T13:15:00",
     "location": "SIFF Cinema Downtown",
-    "url": "https://www.siff.net/festival/beef"
+    "url": "https://www.siff.net/festival/beef",
+    "duration_minutes": 85
   },
   {
     "title": "How to Build a Library",
     "start_time": "2025-05-16T13:30:00",
     "location": "AMC Pacific Place",
-    "url": "https://www.siff.net/festival/how-to-build-a-library"
+    "url": "https://www.siff.net/festival/how-to-build-a-library",
+    "duration_minutes": 100
   },
   {
     "title": "Auction",
     "start_time": "2025-05-16T13:30:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/auction"
+    "url": "https://www.siff.net/festival/auction",
+    "duration_minutes": 91
   },
   {
     "title": "Manas",
     "start_time": "2025-05-16T15:00:00",
     "location": "SIFF Film Center",
-    "url": "https://www.siff.net/festival/manas"
+    "url": "https://www.siff.net/festival/manas",
+    "duration_minutes": 101
   },
   {
     "title": "Monk in Pieces",
     "start_time": "2025-05-16T15:00:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/monk-in-pieces"
+    "url": "https://www.siff.net/festival/monk-in-pieces",
+    "duration_minutes": 95
   },
   {
     "title": "Under the Volcano",
     "start_time": "2025-05-16T15:30:00",
     "location": "SIFF Cinema Downtown",
-    "url": "https://www.siff.net/festival/under-the-volcano"
+    "url": "https://www.siff.net/festival/under-the-volcano",
+    "duration_minutes": 102
   },
   {
     "title": "Hanami",
     "start_time": "2025-05-16T15:30:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/hanami"
+    "url": "https://www.siff.net/festival/hanami",
+    "duration_minutes": 96
   },
   {
     "title": "Blue Road: The Edna O'Brien Story",
     "start_time": "2025-05-16T16:00:00",
     "location": "AMC Pacific Place",
-    "url": "https://www.siff.net/festival/blue-road-the-edna-obrien-story"
+    "url": "https://www.siff.net/festival/blue-road-the-edna-obrien-story",
+    "duration_minutes": 100
   },
   {
     "title": "Drowned Land",
     "start_time": "2025-05-16T16:00:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/drowned-land"
+    "url": "https://www.siff.net/festival/drowned-land",
+    "duration_minutes": 86
   },
   {
     "title": "Billy",
     "start_time": "2025-05-16T17:30:00",
     "location": "SIFF Film Center",
-    "url": "https://www.siff.net/festival/billy"
+    "url": "https://www.siff.net/festival/billy",
+    "duration_minutes": 107
   },
   {
     "title": "Ka Whawhai Tonu: Struggle Without End",
     "start_time": "2025-05-16T18:00:00",
     "location": "SIFF Cinema Downtown",
-    "url": "https://www.siff.net/festival/ka-whawhai-tonu-struggle-without-end"
+    "url": "https://www.siff.net/festival/ka-whawhai-tonu-struggle-without-end",
+    "duration_minutes": 115
   },
   {
     "title": "Starman",
     "start_time": "2025-05-16T18:00:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/starman"
+    "url": "https://www.siff.net/festival/starman",
+    "duration_minutes": 85
   },
   {
     "title": "The Librarians",
     "start_time": "2025-05-16T18:30:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/the-librarians"
+    "url": "https://www.siff.net/festival/the-librarians",
+    "duration_minutes": 88
   },
   {
     "title": "Invention",
     "start_time": "2025-05-16T18:30:00",
     "location": "AMC Pacific Place",
-    "url": "https://www.siff.net/festival/invention"
+    "url": "https://www.siff.net/festival/invention",
+    "duration_minutes": 72
   },
   {
     "title": "Dancing Queen in Hollywood",
     "start_time": "2025-05-16T18:30:00",
     "location": "Shoreline Community College",
-    "url": "https://www.siff.net/festival/dancing-queen-in-hollywood"
+    "url": "https://www.siff.net/festival/dancing-queen-in-hollywood",
+    "duration_minutes": 87
   },
   {
     "title": "ShortsFest Opening Night",
     "start_time": "2025-05-16T19:00:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/shortsfest-opening-night-x39745"
+    "url": "https://www.siff.net/festival/shortsfest-opening-night-x39745",
+    "duration_minutes": 89
   },
   {
     "title": "Mongrels",
     "start_time": "2025-05-16T20:30:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/mongrels"
+    "url": "https://www.siff.net/festival/mongrels",
+    "duration_minutes": 110
   },
   {
     "title": "ALT Shorts: Dead Reckoning",
     "start_time": "2025-05-16T20:30:00",
     "location": "SIFF Film Center",
-    "url": "https://www.siff.net/festival/alt-shorts-dead-reckoning"
+    "url": "https://www.siff.net/festival/alt-shorts-dead-reckoning",
+    "duration_minutes": 86
   },
   {
     "title": "The Nature of Invisible Things",
     "start_time": "2025-05-16T21:00:00",
     "location": "AMC Pacific Place",
-    "url": "https://www.siff.net/festival/the-nature-of-invisible-things"
+    "url": "https://www.siff.net/festival/the-nature-of-invisible-things",
+    "duration_minutes": 90
   },
   {
     "title": "Chain Reactions",
     "start_time": "2025-05-16T21:00:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/chain-reactions"
+    "url": "https://www.siff.net/festival/chain-reactions",
+    "duration_minutes": 101
   },
   {
     "title": "40 Acres",
     "start_time": "2025-05-16T21:00:00",
     "location": "SIFF Cinema Downtown",
-    "url": "https://www.siff.net/festival/40-acres"
+    "url": "https://www.siff.net/festival/40-acres",
+    "duration_minutes": 113
   },
   {
     "title": "Fucktoys",
     "start_time": "2025-05-16T21:30:00",
     "location": "SIFF Cinema Uptown",
-    "url": "https://www.siff.net/festival/fucktoys"
+    "url": "https://www.siff.net/festival/fucktoys",
+    "duration_minutes": 107
   }
 ]

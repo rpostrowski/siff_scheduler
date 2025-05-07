@@ -7,35 +7,177 @@
   <style>
     body { font-family: Arial, sans-serif; padding: 2em; background: #f8f8f8; }
     h1 { text-align: center; }
-    .film-card { background: white; margin: 1em auto; padding: 1em; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .title { font-size: 1.2em; font-weight: bold; }
+    .controls { text-align: center; margin-bottom: 2em; }
+    .combo-container { background: white; margin: 1em auto; padding: 1em; border-radius: 8px; max-width: 600px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; }
+    .combo-header { display: flex; justify-content: space-between; align-items: center; font-size: 1.2em; font-weight: bold; }
     .meta { color: #555; margin-top: 0.3em; }
     .link { margin-top: 0.5em; display: inline-block; color: #0077cc; }
+    .movie-list { display: none; margin-top: 1em; }
+    .movie-card { background: #f0f0f0; margin: 0.5em 0; padding: 1em; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .expanded { background: #e0e0e0; }
   </style>
 </head>
 <body>
   <h1>SIFF Screenings – May 16</h1>
+  <div class="controls">
+    <label for="startTime">Start Time:</label>
+    <input type="time" id="startTime" value="00:00">
+    <label for="endTime">End Time:</label>
+    <input type="time" id="endTime" value="23:59">
+    <br><br>
+    <div>
+      <label><input type="checkbox" id="uptown" checked> SIFF Cinema Uptown</label>
+      <label><input type="checkbox" id="egyptian" checked> SIFF Cinema Egyptian</label>
+      <label><input type="checkbox" id="downtown" checked> SIFF Cinema Downtown</label>
+    </div>
+    <br>
+    <button onclick="findSchedules()">Find Options</button>
+  </div>
   <div id="screenings"></div>
 
   <script>
-    fetch('may16_screenings.json')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('screenings');
-        data.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+    // Mock data
+    const screenings = [
+      {
+        title: "April",
+        start_time: "2025-05-16T11:00:00",
+        location: "SIFF Cinema Uptown",
+        url: "#",
+        duration_minutes: 113
+      },
+      {
+        title: "Bitter Gold",
+        start_time: "2025-05-16T14:00:00",
+        location: "SIFF Cinema Egyptian",
+        url: "#",
+        duration_minutes: 100
+      },
+      {
+        title: "Dancing Queen in Hollywood",
+        start_time: "2025-05-16T17:00:00",
+        location: "SIFF Cinema Downtown",
+        url: "#",
+        duration_minutes: 90
+      },
+      {
+        title: "Monk in Pieces",
+        start_time: "2025-05-16T19:30:00",
+        location: "SIFF Cinema Uptown",
+        url: "#",
+        duration_minutes: 105
+      }
+    ];
 
-        data.forEach(film => {
+    screenings.forEach(film => {
+      const start = new Date(film.start_time);
+      film.start = start;
+      film.end = new Date(start.getTime() + film.duration_minutes * 60000);
+    });
+
+    function travelTime(from, to) {
+      if (from === to) return 0;
+      const key = [from, to].sort().join('->');
+      const TRAVEL_TIMES = {
+        'SIFF Cinema Downtown->SIFF Cinema Uptown': 15,
+        'SIFF Cinema Uptown->SIFF Cinema Egyptian': 10,
+        'SIFF Cinema Downtown->SIFF Cinema Egyptian': 10
+      };
+      return TRAVEL_TIMES[key] || 20;
+    }
+
+    function findSchedules() {
+      const startTime = document.getElementById('startTime').value;
+      const endTime = document.getElementById('endTime').value;
+
+      const start = new Date(`2025-05-16T${startTime}:00`);
+      const end = new Date(`2025-05-16T${endTime}:00`);
+
+      // Get selected theaters
+      const selectedTheaters = [];
+      if (document.getElementById('uptown').checked) selectedTheaters.push("SIFF Cinema Uptown");
+      if (document.getElementById('egyptian').checked) selectedTheaters.push("SIFF Cinema Egyptian");
+      if (document.getElementById('downtown').checked) selectedTheaters.push("SIFF Cinema Downtown");
+
+      const filteredScreenings = screenings.filter(film => 
+        film.start >= start && 
+        film.end <= end && 
+        selectedTheaters.includes(film.location)
+      ).sort((a, b) => a.end - b.end);
+
+      let result = [];
+
+      function dfs(path, used, lastEnd, lastLoc) {
+        if (path.length > 0 && path[path.length - 1].end <= end) {
+          result.push([...path]);
+        }
+
+        if (path.length > 0 && path[path.length - 1].end > end) return;
+
+        for (let i = 0; i < filteredScreenings.length; i++) {
+          if (used.has(i)) continue;
+          const s = filteredScreenings[i];
+          if (!lastEnd || s.start.getTime() >= lastEnd.getTime() + travelTime(lastLoc, s.location) * 60000) {
+            used.add(i);
+            path.push(s);
+            dfs(path, used, s.end, s.location);
+            path.pop();
+            used.delete(i);
+          }
+        }
+      }
+
+      dfs([], new Set(), null, null);
+
+      // Sort results by number of movies (desc) and then by total runtime (asc)
+      result.sort((a, b) => {
+        const aTime = a.reduce((acc, film) => acc + film.duration_minutes, 0);
+        const bTime = b.reduce((acc, film) => acc + film.duration_minutes, 0);
+
+        return b.length - a.length || aTime - bTime;
+      });
+
+      const container = document.getElementById('screenings');
+      container.innerHTML = '';
+
+      if (result.length === 0) {
+        container.innerHTML = `<p style="text-align:center;">No possible combinations for the selected time range and theaters.</p>`;
+        return;
+      }
+
+      result.forEach(combo => {
+        const comboContainer = document.createElement('div');
+        comboContainer.className = 'combo-container';
+
+        const comboHeader = document.createElement('div');
+        comboHeader.className = 'combo-header';
+
+        const comboTitle = document.createElement('span');
+        comboTitle.textContent = `Option with ${combo.length} movies`;
+
+        const totalRuntime = combo.reduce((acc, film) => acc + film.duration_minutes, 0);
+        const runtimeText = document.createElement('span');
+        runtimeText.textContent = `Total runtime: ${totalRuntime} minutes`;
+
+        comboHeader.appendChild(comboTitle);
+        comboHeader.appendChild(runtimeText);
+        comboContainer.appendChild(comboHeader);
+
+        const movieList = document.createElement('div');
+        movieList.className = 'movie-list';
+
+        combo.forEach(film => {
           const card = document.createElement('div');
-          card.className = 'film-card';
+          card.className = 'movie-card';
 
           const title = document.createElement('div');
           title.className = 'title';
           title.textContent = film.title;
 
-          const time = new Date(film.start_time);
           const meta = document.createElement('div');
           meta.className = 'meta';
-          meta.textContent = `${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – ${film.location}`;
+          const startTime = film.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const endTime = film.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          meta.textContent = `${startTime} – ${endTime} – ${film.location}`;
 
           const link = document.createElement('a');
           link.href = film.url;
@@ -46,10 +188,20 @@
           card.appendChild(title);
           card.appendChild(meta);
           card.appendChild(link);
-
-          container.appendChild(card);
+          movieList.appendChild(card);
         });
+
+        comboContainer.appendChild(movieList);
+
+        // Toggle visibility of the movie list when the header is clicked
+        comboContainer.onclick = function () {
+          movieList.classList.toggle('movie-list');
+          comboContainer.classList.toggle('expanded');
+        };
+
+        container.appendChild(comboContainer);
       });
+    }
   </script>
 </body>
 </html>

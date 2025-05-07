@@ -10,7 +10,7 @@ def extract_screenings(url):
     title = title_tag.text.strip() if title_tag else "Unknown Title"
 
     screenings = []
-
+    
     # Find the section with "Friday, May 16, 2025"
     for day_div in soup.select('.screenings .day'):
         date_text = day_div.find('p', class_='h3')
@@ -29,11 +29,28 @@ def extract_screenings(url):
                 time_str = time_tag.get_text(strip=True)
                 start_time = datetime.strptime("2025 May 16 " + time_str, "%Y %b %d %I:%M %p")
                 venue = venue_tag.get_text(strip=True)
+
+                # Extract Running Time (duration in minutes) from the film-detail section
+                duration_minutes = None
+                film_detail_section = soup.select_one('.details.film-detail')
+                if film_detail_section:
+                    for li in film_detail_section.find_all('li'):
+                        label = li.find('span', class_='label')
+                        if label and 'Running Time' in label.get_text():
+                            duration_text = li.find('span', class_='detail').get_text(strip=True)
+                            # Extract number of minutes
+                            duration_minutes = int(duration_text.split()[0])
+
+                if duration_minutes is None:
+                    print(f"Running Time not found for {title} at {url}")
+                    continue
+
                 screenings.append({
                     "title": title,
                     "start_time": start_time.isoformat(),
                     "location": venue,
-                    "url": url
+                    "url": url,
+                    "duration_minutes": duration_minutes
                 })
             except Exception as e:
                 print(f"Failed to parse time at {url}: {e}")
