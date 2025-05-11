@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIFF May 16 Screenings</title>
+  <style>
+    :root {
+      --primary: #4f74aa;
+      --primary-light: #e3f2fd;
+      --accent: #ff4081;
+      --gray-light: #f5f5f5;
+      --gray: #e0e0e0;
+      --gray-dark: #757575;
+      --theater-1: #e3f2fd;
+      --theater-2: #e8f5e9;
+      --theater-3: #fff3e0;
+      --theater-4: #f3e5f5;
+      --theater-5: #e0f2f1;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 1em;
+      margin: 0;
+      background: var(--gray-light);
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 1.5em;
+      background: var(--primary);
+      color: white;
+      padding: 1.5em;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+    
+    .subtitle {
+      margin-top: 0.5em;
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+    
+    .controls {
+      background: white;
+      padding: 1.5em;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 1.5em;
+    }
+    
+    .filter-section {
+      margin-bottom: 1.5em;
+    }
+    
+    .filter-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .filter-section h3 {
+      margin: 0 0 0.5em 0;
+      font-size: 1em;
+      text-transform: uppercase;
+      color: var(--gray-dark);
+      letter-spacing: 0.05em;
+    }
+    
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      align-items: center;
+    }
+    
+    #theater-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+    }
+    
+    .theater-chip {
+      padding: 0.4em 0.8em;
+      border-radius: 20px;
+      background: var(--gray-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid var(--gray);
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+    }
+    
+    .theater-chip.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .theater-chip input {
+      margin-right: 0.5em;
+    }
+    
+    .time-filter {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    
+    .time-filter input {
+      padding: 0.4em;
+      border-radius: 4px;
+      border: 1px solid var(--gray);
+    }
+    
+    .quick-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+    }
+    
+    .quick-filter {
+      padding: 0.4em 0.8em;
+      border-radius: 4px;
+      background: var(--gray-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid var(--gray);
+      font-size: 0.9em;
+    }
+    
+    .quick-filter:hover, .theater-chip:hover {
+      background: var(--gray);
+    }
+    
+    .quick-filter.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .transport-section {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+    }
+    
+    .transport-option {
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+    }
+    
+    .transport-option input {
+      margin: 0;
+    }
+    
+    .sort-section, .buffer-section {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+    }
+    
+    select, input[type="number"] {
+      padding: 0.4em;
+      border-radius: 4px;
+      border: 1px solid var(--gray);
+      background: white;
+    }
+    
+    .movie-filters {
+      margin-top: 1em;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 0.5em;
+      border-radius: 4px;
+      border: 1px solid var(--gray);
+      background: white;
+    }
+    
+    .three-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.5em;
+    }
+    
+    .movie-filter {
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+      margin-bottom: 0.3em;
+      font-size: 0.9em;
+    }
+    
+    .movie-filter input {
+      margin: 0;
+    }
+    
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 1em;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 1.5em;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 2em;
+      height: 2em;
+      border: 0.3em solid rgba(0,0,0,0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5em;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .combination {
+      background: white;
+      margin-bottom: 1em;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .combo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1em;
+      background: white;
+      cursor: pointer;
+      border-bottom: 1px solid var(--gray);
+    }
+    
+    .combo-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    
+    .combo-title {
+      font-weight: 500;
+    }
+    
+    .combo-count {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    
+    .combo-runtime {
+      color: var(--gray-dark);
+      font-size: 0.9em;
+    }
+    
+    .combo-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    
+    .favorite-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2em;
+      color: var(--gray-dark);
+      padding: 0.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .favorite-button.active {
+      color: #ffc107;
+    }
+    
+    .expand-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2em;
+      color: var(--gray-dark);
+      padding: 0.2em;
+      transform: rotate(0deg);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .expanded .expand-button {
+      transform: rotate(180deg);
+    }
+    
+    .combo-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-top: 0.5em;
+      font-size: 0.9em;
+      color: var(--gray-dark);
+    }
+    
+    .combo-preview-item {
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+    }
+    
+    .preview-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    
+    .combo-body {
+      display: none;
+      padding: 1em;
+    }
+    
+    .expanded .combo-body {
+      display: block;
+    }
+    
+    .timeline {
+      position: relative;
+      height: 80px;
+      margin: 1em 0;
+      background: var(--gray-light);
+      border-radius: 4px;
+    }
+    
+    .timeline-hour {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--gray);
+    }
+    
+    .timeline-hour-label {
+      position: absolute;
+      top: -1.5em;
+      transform: translateX(-50%);
+      font-size: 0.8em;
+      color: var(--gray-dark);
+    }
+    
+    .timeline-event {
+      position: absolute;
+      height: 60px;
+      top: 10px;
+      border-radius: 4px;
+      padding: 0.3em;
+      font-size: 0.8em;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .timeline-travel {
+      position: absolute;
+      height: 20px;
+      top: 30px;
+      background-color: #f5f5f5;
+      border: 1px dashed var(--gray-dark);
+      border-radius: 4px;
+      font-size: 0.7em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-dark);
+    }
+    
+    .movie-list {
+      margin-top: 1em;
+    }
+    
+    .movie-item {
+      display: flex;
+      border-left: 4px solid transparent;
+      padding: 0.8em;
+      margin-bottom: 0.5em;
+      background: var(--gray-light);
+      border-radius: 4px;
+    }
+    
+    .movie-time {
+      flex: 0 0 150px;
+      font-weight: 500;
+    }
+    
+    .movie-details {
+      flex-grow: 1;
+    }
+    
+    .movie-title {
+      font-weight: 500;
+      margin-bottom: 0.2em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    
+    .must-see-tag {
+      background: var(--accent);
+      color: white;
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-size: 0.8em;
+      font-weight: normal;
+    }
+    
+    .movie-theater {
+      font-size: 0.9em;
+      color: var(--gray-dark);
+    }
+    
+    .movie-link {
+      margin-top: 0.3em;
+    }
+    
+    .movie-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+    
+    .travel-info {
+      background: var(--gray-light);
+      padding: 0.5em;
+      margin: 0.3em 0;
+      font-size: 0.85em;
+      color: var(--gray-dark);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 2em;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .export-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+      margin-top: 1em;
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 768px) {
+      .filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .sort-section, .buffer-section, .transport-section {
+        flex-wrap: wrap;
+      }
+      
+      .combo-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5em;
+      }
+      
+      .combo-actions {
+        align-self: flex-end;
+      }
+      
+      .movie-item {
+        flex-direction: column;
+      }
+      
+      .movie-time {
+        margin-bottom: 0.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SIFF Film Festival Planner</h1>
+      <div class="subtitle">May 16, 2025 - Rachel's Best Day Ever</div>
+    </header>
+    
+    <div class="controls">
+      <div class="filter-section">
+        <h3>Time Range</h3>
+        <div class="filter-row">
+          <div class="time-filter">
+            <label for="startTime">Start:</label>
+            <input type="time" id="startTime" value="10:00">
+            <label for="endTime">End:</label>
+            <input type="time" id="endTime" value="23:59">
+          </div>
+          
+          <div class="quick-filters">
+            <div class="quick-filter" data-start="14:00" data-end="18:00">Afternoon</div>
+            <div class="quick-filter" data-start="18:00" data-end="23:59">Evening</div>
+            <div class="quick-filter" data-start="10:00" data-end="23:59">Full Day</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h3>Theaters</h3>
+        <div id="theater-filters">
+          <!-- Theaters will be populated here -->
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-row">
+          <div class="transport-section">
+            <h3>Transportation:</h3>
+            <div class="transport-option">
+              <input type="radio" name="transportMode" id="drive" value="drive" checked>
+              <label for="drive">Drive</label>
+            </div>
+            <div class="transport-option">
+              <input type="radio" name="transportMode" id="walk" value="walk">
+              <label for="walk">Walk</label>
+            </div>
+          </div>
+          
+          <div class="buffer-section">
+            <h3>Buffer Time:</h3>
+            <input type="number" id="bufferTime" min="0" max="60" value="15" style="width: 60px;">
+            <span>minutes</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-row">
+          <div class="sort-section">
+            <h3>Sort By:</h3>
+            <select id="sortOptions">
+              <option value="films">Number of Films</option>
+              <option value="theaters">Number of Theaters</option>
+              <option value="runtime">Total Runtime</option>
+              <option value="favorites">Favorites First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h3>Must-See Films</h3>
+        <div class="movie-filters three-columns">
+          <!-- Movies will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="loading">
+      <div class="spinner"></div>
+      <span>Calculating best combinations...</span>
+    </div>
+    
+    <div id="results">
+      <!-- Results will be populated here -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Theater colors - assign each theater a color for consistency
+      const theaterColors = {
+        'SIFF Cinema Uptown': 'var(--theater-1)',
+        'SIFF Cinema Downtown': 'var(--theater-2)',
+        'AMC Pacific Place': 'var(--theater-3)',
+        'SIFF Film Center': 'var(--theater-4)',
+        'Shoreline Community College': 'var(--theater-5)'
+      };
+      
+      // Icons
+      const icons = {
+        favorite: '★',
+        notFavorite: '☆',
+        expand: '▼',
+        travel: '↔',
+        clock: '🕒'
+      };
+      
+      // Initialize screenings data
+      const screenings = [
+        {
+          "title": "April",
+          "start_time": "2025-05-16T12:30:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/april",
+          "duration_minutes": 134
+        },
+        {
+          "title": "Bitter Gold",
+          "start_time": "2025-05-16T13:00:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/bitter-gold",
+          "duration_minutes": 83
+        },
+        {
+          "title": "Beef",
+          "start_time": "2025-05-16T13:15:00",
+          "location": "SIFF Cinema Downtown",
+          "url": "https://www.siff.net/festival/beef",
+          "duration_minutes": 85
+        },
+        {
+          "title": "How to Build a Library",
+          "start_time": "2025-05-16T13:30:00",
+          "location": "AMC Pacific Place",
+          "url": "https://www.siff.net/festival/how-to-build-a-library",
+          "duration_minutes": 100
+        },
+        {
+          "title": "Auction",
+          "start_time": "2025-05-16T13:30:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/auction",
+          "duration_minutes": 91
+        },
+        {
+          "title": "Manas",
+          "start_time": "2025-05-16T15:00:00",
+          "location": "SIFF Film Center",
+          "url": "https://www.siff.net/festival/manas",
+          "duration_minutes": 101
+        },
+        {
+          "title": "Monk in Pieces",
+          "start_time": "2025-05-16T15:00:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/monk-in-pieces",
+          "duration_minutes": 95
+        },
+        {
+          "title": "Under the Volcano",
+          "start_time": "2025-05-16T15:30:00",
+          "location": "SIFF Cinema Downtown",
+          "url": "https://www.siff.net/festival/under-the-volcano",
+          "duration_minutes": 102
+        },
+        {
+          "title": "Hanami",
+          "start_time": "2025-05-16T15:30:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/hanami",
+          "duration_minutes": 96
+        },
+        {
+          "title": "Blue Road: The Edna O'Brien Story",
+          "start_time": "2025-05-16T16:00:00",
+          "location": "AMC Pacific Place",
+          "url": "https://www.siff.net/festival/blue-road-the-edna-obrien-story",
+          "duration_minutes": 100
+        },
+        {
+          "title": "Drowned Land",
+          "start_time": "2025-05-16T16:00:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/drowned-land",
+          "duration_minutes": 86
+        },
+        {
+          "title": "Billy",
+          "start_time": "2025-05-16T17:30:00",
+          "location": "SIFF Film Center",
+          "url": "https://www.siff.net/festival/billy",
+          "duration_minutes": 107
+        },
+        {
+          "title": "Ka Whawhai Tonu: Struggle Without End",
+          "start_time": "2025-05-16T18:00:00",
+          "location": "SIFF Cinema Downtown",
+          "url": "https://www.siff.net/festival/ka-whawhai-tonu-struggle-without-end",
+          "duration_minutes": 115
+        },
+        {
+          "title": "Starman",
+          "start_time": "2025-05-16T18:00:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/starman",
+          "duration_minutes": 85
+        },
+        {
+          "title": "The Librarians",
+          "start_time": "2025-05-16T18:30:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/the-librarians",
+          "duration_minutes": 88
+        },
+        {
+          "title": "Invention",
+          "start_time": "2025-05-16T18:30:00",
+          "location": "AMC Pacific Place",
+          "url": "https://www.siff.net/festival/invention",
+          "duration_minutes": 72
+        },
+        {
+          "title": "Dancing Queen in Hollywood",
+          "start_time": "2025-05-16T18:30:00",
+          "location": "Shoreline Community College",
+          "url": "https://www.siff.net/festival/dancing-queen-in-hollywood",
+          "duration_minutes": 87
+        },
+        {
+          "title": "ShortsFest Opening Night",
+          "start_time": "2025-05-16T19:00:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/shortsfest-opening-night-x39745",
+          "duration_minutes": 89
+        },
+        {
+          "title": "Mongrels",
+          "start_time": "2025-05-16T20:30:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/mongrels",
+          "duration_minutes": 110
+        },
+        {
+          "title": "ALT Shorts: Dead Reckoning",
+          "start_time": "2025-05-16T20:30:00",
+          "location": "SIFF Film Center",
+          "url": "https://www.siff.net/festival/alt-shorts-dead-reckoning",
+          "duration_minutes": 86
+        },
+        {
+          "title": "The Nature of Invisible Things",
+          "start_time": "2025-05-16T21:00:00",
+          "location": "AMC Pacific Place",
+          "url": "https://www.siff.net/festival/the-nature-of-invisible-things",
+          "duration_minutes": 90
+        },
+        {
+          "title": "Chain Reactions",
+          "start_time": "2025-05-16T21:00:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/chain-reactions",
+          "duration_minutes": 101
+        },
+        {
+          "title": "40 Acres",
+          "start_time": "2025-05-16T21:00:00",
+          "location": "SIFF Cinema Downtown",
+          "url": "https://www.siff.net/festival/40-acres",
+          "duration_minutes": 113
+        },
+        {
+          "title": "Fucktoys",
+          "start_time": "2025-05-16T21:30:00",
+          "location": "SIFF Cinema Uptown",
+          "url": "https://www.siff.net/festival/fucktoys",
+          "duration_minutes": 107
+        }
+      ];
+
+      // Process screenings to add Date objects
+      screenings.forEach(film => {
+        const start = new Date(film.start_time);
+        film.start = start;
+        film.end = new Date(start.getTime() + film.duration_minutes * 60000);
+      });
+      
+      // Travel times for driving
+      const TRAVEL_TIMES = {
+        'SIFF Cinema Downtown->SIFF Cinema Uptown': 7,
+        'SIFF Cinema Uptown->SIFF Cinema Downtown': 7,
+        'SIFF Cinema Uptown->SIFF Cinema Egyptian': 15,
+        'SIFF Cinema Egyptian->SIFF Cinema Uptown': 15,
+        'SIFF Cinema Downtown->SIFF Cinema Egyptian': 11,
+        'SIFF Cinema Egyptian->SIFF Cinema Downtown': 11,
+        'SIFF Cinema Uptown->AMC Pacific Place': 11,
+        'AMC Pacific Place->SIFF Cinema Uptown': 11,
+        'SIFF Cinema Downtown->AMC Pacific Place': 6,
+        'AMC Pacific Place->SIFF Cinema Downtown': 6,
+        'SIFF Film Center->SIFF Cinema Uptown': 3,
+        'SIFF Film Center->SIFF Cinema Downtown': 6,
+        'AMC Pacific Place->SIFF Film Center': 9,
+        'AMC Pacific Place->Shoreline Community College': 27,
+        'Shoreline Community College->AMC Pacific Place': 27,
+        'SIFF Cinema Uptown->Shoreline Community College': 31,
+        'Shoreline Community College->SIFF Cinema Uptown': 31,
+        'SIFF Cinema Downtown->Shoreline Community College': 27,
+        'Shoreline Community College->SIFF Cinema Downtown': 27
+      };
+      
+      // Travel times for walking
+      const WALK_TIMES = {
+        'SIFF Cinema Downtown->SIFF Cinema Uptown': 26,
+        'SIFF Cinema Uptown->SIFF Cinema Downtown': 26,
+        'SIFF Cinema Uptown->SIFF Cinema Egyptian': 50,
+        'SIFF Cinema Egyptian->SIFF Cinema Uptown': 50,
+        'SIFF Cinema Downtown->SIFF Cinema Egyptian': 27,
+        'SIFF Cinema Egyptian->SIFF Cinema Downtown': 27,
+        'SIFF Cinema Uptown->AMC Pacific Place': 36,
+        'AMC Pacific Place->SIFF Cinema Uptown': 36,
+        'SIFF Cinema Downtown->AMC Pacific Place': 11,
+        'AMC Pacific Place->SIFF Cinema Downtown': 11,
+        'SIFF Film Center->SIFF Cinema Uptown': 3,
+        'SIFF Film Center->SIFF Cinema Downtown': 23,
+        'AMC Pacific Place->SIFF Film Center': 34,
+        'AMC Pacific Place->Shoreline Community College': 233,
+        'Shoreline Community College->AMC Pacific Place': 233,
+        'SIFF Cinema Uptown->Shoreline Community College': 219,
+        'Shoreline Community College->SIFF Cinema Uptown': 219,
+        'SIFF Cinema Downtown->Shoreline Community College': 223,
+        'Shoreline Community College->SIFF Cinema Downtown': 223
+      };
+      
+      // Get travel time between theaters
+      function travelTime(from, to) {
+        if (from === to) return 0;
+        const key = `${from}->${to}`;
+        const mode = document.querySelector('input[name="transportMode"]:checked').value;
+        const map = mode === 'walk' ? WALK_TIMES : TRAVEL_TIMES;
+        return map[key] || 20; // Default to 20 minutes if not specified
+      }
+      
+      // Format time from Date object
+      function formatTime(date) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+      
+      // Get all unique theaters
+      const theaters = [...new Set(screenings.map(s => s.location))].sort();
+      
+      // Create theater filter chips
+      const theaterFiltersContainer = document.getElementById('theater-filters');
+      theaters.forEach(theater => {
+        const chip = document.createElement('div');
+        chip.className = 'theater-chip active';
+        chip.dataset.theater = theater;
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = theater !== "Shoreline Community College"; // All checked by default except Shoreline
+        checkbox.id = theater.toLowerCase().replace(/\s+/g, '-');
+        
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = theater;
+        
+        chip.appendChild(checkbox);
+        chip.appendChild(label);
+        
+        chip.addEventListener('click', (e) => {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+          }
+          chip.classList.toggle('active', checkbox.checked);
+          updateResults();
+        });
+        
+        theaterFiltersContainer.appendChild(chip);
+        
+        // Set initial state
+        if (theater === "Shoreline Community College") {
+          chip.classList.remove('active');
+        }
+      });
+      
+      // Create Must-See movie checkboxes
+      const movieFiltersContainer = document.querySelector('.movie-filters');
+      screenings.forEach(film => {
+        const filterItem = document.createElement('div');
+        filterItem.className = 'movie-filter';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = film.title;
+        checkbox.id = `film-${film.title.toLowerCase().replace(/\s+/g, '-')}`;
+        
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = film.title;
+        
+        filterItem.appendChild(checkbox);
+        filterItem.appendChild(label);
+        
+        movieFiltersContainer.appendChild(filterItem);
+        
+        checkbox.addEventListener('change', updateResults);
+      });
+      
+      // Set up quick filter buttons
+      document.querySelectorAll('.quick-filter').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.quick-filter').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          button.classList.add('active');
+          
+          document.getElementById('startTime').value = button.dataset.start;
+          document.getElementById('endTime').value = button.dataset.end;
+          
+          updateResults();
+        });
+      });
+      
+      // Add event listeners to other filter elements
+      document.getElementById('startTime').addEventListener('change', updateResults);
+      document.getElementById('endTime').addEventListener('change', updateResults);
+      document.getElementById('sortOptions').addEventListener('change', updateResults);
+      document.getElementById('bufferTime').addEventListener('change', updateResults);
+      
+      document.querySelectorAll('input[name="transportMode"]').forEach(radio => {
+        radio.addEventListener('change', updateResults);
+      });
+      
+      // Load favorites from local storage
+      let favorites = new Set();
+      try {
+        const savedFavorites = localStorage.getItem('siffFavorites');
+        if (savedFavorites) {
+          favorites = new Set(JSON.parse(savedFavorites));
+        }
+      } catch (e) {
+        console.error('Error loading favorites from local storage', e);
+      }
+      
+      // Save favorites to local storage
+      function saveFavorites() {
+        try {
+          localStorage.setItem('siffFavorites', JSON.stringify([...favorites]));
+        } catch (e) {
+          console.error('Error saving favorites to local storage', e);
+        }
+      }
+      
+      // Function to create a unique ID for a combination
+      function getCombinationId(combo) {
+        return combo.map(film => film.title).join('|');
+      }
+      
+      // Toggle favorite status of a combination
+      function toggleFavorite(comboId, button) {
+        if (favorites.has(comboId)) {
+          favorites.delete(comboId);
+          button.textContent = icons.notFavorite;
+          button.classList.remove('active');
+        } else {
+          favorites.add(comboId);
+          button.textContent = icons.favorite;
+          button.classList.add('active');
+        }
+        saveFavorites();
+        
+        // Re-sort if sorting by favorites
+        if (document.getElementById('sortOptions').value === 'favorites') {
+          updateResults();
+        }
+      }
+      
+      // Format runtime into hours and minutes
+      function formatRuntime(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        if (hours === 0) return `${mins}m`;
+        return `${hours}h ${mins}m`;
+      }
+      
+      // Create a visual timeline for a combination
+      function createTimeline(combo) {
+        const timeline = document.createElement('div');
+        timeline.className = 'timeline';
+        
+        const firstFilm = combo[0];
+        const lastFilm = combo[combo.length - 1];
+        
+        const startHour = firstFilm.start.getHours();
+        const endHour = Math.ceil(lastFilm.end.getHours() + (lastFilm.end.getMinutes() > 0 ? 1 : 0));
+        
+        const timelineStart = new Date(`2025-05-16T${startHour}:00:00`);
+        const timelineEnd = new Date(`2025-05-16T${endHour}:00:00`);
+        const timelineSpan = timelineEnd - timelineStart;
+        
+        // Add hour markers
+        for (let h = startHour; h <= endHour; h++) {
+          const hourMarker = document.createElement('div');
+          hourMarker.className = 'timeline-hour';
+          
+          const hourTime = new Date(`2025-05-16T${h}:00:00`);
+          const position = ((hourTime - timelineStart) / timelineSpan) * 100;
+          
+          hourMarker.style.left = `${position}%`;
+          
+          const label = document.createElement('div');
+          label.className = 'timeline-hour-label';
+          label.textContent = h % 12 === 0 ? 12 : h % 12;
+          hourMarker.appendChild(label);
+          
+          timeline.appendChild(hourMarker);
+        }
+        
+        // Add film blocks
+        combo.forEach((film, index) => {
+          const block = document.createElement('div');
+          block.className = 'timeline-event';
+          block.textContent = film.title;
+          block.style.backgroundColor = theaterColors[film.location];
+          block.style.borderLeft = `3px solid ${theaterColors[film.location]}`;
+          
+          const left = ((film.start - timelineStart) / timelineSpan) * 100;
+          const width = ((film.end - film.start) / timelineSpan) * 100;
+          
+          block.style.left = `${left}%`;
+          block.style.width = `${width}%`;
+          
+          block.title = `${film.title} (${formatTime(film.start)} - ${formatTime(film.end)}) at ${film.location}`;
+          
+          timeline.appendChild(block);
+          
+          // Add travel time blocks
+          if (index > 0) {
+            const prevFilm = combo[index - 1];
+            const travel = travelTime(prevFilm.location, film.location);
+            
+            if (travel > 0) {
+              const travelBlock = document.createElement('div');
+              travelBlock.className = 'timeline-travel';
+              
+              const travelStart = new Date(prevFilm.end);
+              const travelEnd = new Date(travelStart.getTime() + travel * 60000);
+              
+              const travelLeft = ((travelStart - timelineStart) / timelineSpan) * 100;
+              const travelWidth = ((travelEnd - travelStart) / timelineSpan) * 100;
+              
+              travelBlock.style.left = `${travelLeft}%`;
+              travelBlock.style.width = `${travelWidth}%`;
+              
+              travelBlock.textContent = `${travel}m`;
+              travelBlock.title = `Travel: ${travel} min from ${prevFilm.location} to ${film.location}`;
+              
+              timeline.appendChild(travelBlock);
+            }
+          }
+        });
+        
+        return timeline;
+      }
+      
+      // Main function to update results
+      function updateResults() {
+        // Show loading indicator
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('results').innerHTML = '';
+        
+        // Add a small delay to allow the UI to update
+        setTimeout(() => {
+          const startTime = document.getElementById('startTime').value;
+          const endTime = document.getElementById('endTime').value;
+          const bufferMinutes = parseInt(document.getElementById('bufferTime').value) || 0;
+          
+          const start = new Date(`2025-05-16T${startTime}:00`);
+          const end = new Date(`2025-05-16T${endTime}:00`);
+          
+          // Get selected theaters
+          const selectedTheaters = theaters.filter(theater => {
+            const id = theater.toLowerCase().replace(/\s+/g, '-');
+            return document.getElementById(id).checked;
+          });
+          
+          // Get must-see movies
+          const mustSeeMovies = Array.from(document.querySelectorAll('.movie-filter input:checked')).map(checkbox => checkbox.value);
+          
+          // Filter screenings based on time and theater
+          const filteredScreenings = screenings.filter(film =>
+            film.start >= start &&
+            film.end <= end &&
+            selectedTheaters.includes(film.location)
+          ).sort((a, b) => a.start - b.start);
+          
+          // Find all possible combinations of films
+          let result = [];
+          
+          function dfs(path, used, lastEnd, lastLoc) {
+            // Check if current path is valid and add to results
+            if (path.length > 0 && path[path.length - 1].end <= end) {
+              result.push([...path]);
+            }
+            
+            // Stop if we've gone past the end time
+            if (path.length > 0 && path[path.length - 1].end > end) return;
+            
+            // Try adding each unused film
+            for (let i = 0; i < filteredScreenings.length; i++) {
+              if (used.has(i)) continue;
+              const s = filteredScreenings[i];
+              
+              // Check if there's enough time to travel + buffer
+              if (!lastEnd || s.start.getTime() >= lastEnd.getTime() + 
+                 (travelTime(lastLoc, s.location) + bufferMinutes) * 60000) {
+                used.add(i);
+                path.push(s);
+                dfs(path, used, s.end, s.location);
+                path.pop();
+                used.delete(i);
+              }
+            }
+          }
+          
+          dfs([], new Set(), null, null);
+          
+          // Filter combinations to include all must-see movies
+          if (mustSeeMovies.length > 0) {
+            result = result.filter(combo => {
+              const comboTitles = combo.map(film => film.title);
+              return mustSeeMovies.every(mustSee => comboTitles.includes(mustSee));
+            });
+          }
+          
+          // Process combinations and prepare for display
+          result = result.map(combo => {
+            const comboId = getCombinationId(combo);
+            const isFavorite = favorites.has(comboId);
+            const totalRuntime = combo.reduce((acc, film) => acc + film.duration_minutes, 0);
+            const uniqueTheaters = new Set(combo.map(film => film.location)).size;
+            
+            return { 
+              combo, 
+              comboId, 
+              isFavorite, 
+              totalRuntime, 
+              uniqueTheaters,
+              mustSeeCount: combo.filter(film => mustSeeMovies.includes(film.title)).length
+            };
+          });
+          
+          // Sort results based on selected option
+          const sortOption = document.getElementById('sortOptions').value;
+          
+          switch(sortOption) {
+            case 'films':
+              result.sort((a, b) => b.combo.length - a.combo.length);
+              break;
+            case 'theaters':
+              result.sort((a, b) => b.uniqueTheaters - a.uniqueTheaters);
+              break;
+            case 'runtime':
+              result.sort((a, b) => b.totalRuntime - a.totalRuntime);
+              break;
+            case 'favorites':
+              result.sort((a, b) => {
+                if (a.isFavorite && !b.isFavorite) return -1;
+                if (!a.isFavorite && b.isFavorite) return 1;
+                return b.combo.length - a.combo.length;
+              });
+              break;
+          }
+          
+          // Display results
+          const resultsContainer = document.getElementById('results');
+          resultsContainer.innerHTML = '';
+          
+          // Hide loading indicator
+          document.getElementById('loading').style.display = 'none';
+          
+          if (result.length === 0) {
+            resultsContainer.innerHTML = `
+              <div class="no-results">
+                <h3>No possible combinations found</h3>
+                <p>Try adjusting your time range, theater selection, or must-see film requirements.</p>
+              </div>
+            `;
+            return;
+          }
+          
+          // Limit to top 50 combinations to avoid browser slowdown
+          const combinationsToShow = result.slice(0, 50);
+          
+          combinationsToShow.forEach((item) => {
+            const { combo, comboId, isFavorite, totalRuntime, uniqueTheaters } = item;
+            
+            const combinationDiv = document.createElement('div');
+            combinationDiv.className = 'combination';
+            
+            // Create combo header
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'combo-header';
+            
+            // Left part of header with title and counts
+            const headerLeft = document.createElement('div');
+            headerLeft.className = 'combo-header-left';
+            
+            const countSpan = document.createElement('span');
+            countSpan.className = 'combo-count';
+            countSpan.textContent = `${combo.length} films`;
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'combo-title';
+            titleSpan.textContent = `${uniqueTheaters} ${uniqueTheaters > 1 ? 'theaters' : 'theater'}`;
+            
+            const runtimeSpan = document.createElement('span');
+            runtimeSpan.className = 'combo-runtime';
+            runtimeSpan.textContent = formatRuntime(totalRuntime);
+            
+            headerLeft.appendChild(countSpan);
+            headerLeft.appendChild(titleSpan);
+            headerLeft.appendChild(document.createTextNode(' • '));
+            headerLeft.appendChild(runtimeSpan);
+            
+            // Header actions
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'combo-actions';
+            
+            const favoriteButton = document.createElement('button');
+            favoriteButton.className = 'favorite-button';
+            favoriteButton.textContent = isFavorite ? icons.favorite : icons.notFavorite;
+            if (isFavorite) favoriteButton.classList.add('active');
+            
+            favoriteButton.addEventListener('click', (e) => {
+              e.stopPropagation();
+              toggleFavorite(comboId, favoriteButton);
+            });
+            
+            const expandButton = document.createElement('button');
+            expandButton.className = 'expand-button';
+            expandButton.textContent = icons.expand;
+            
+            actionsDiv.appendChild(favoriteButton);
+            actionsDiv.appendChild(expandButton);
+            
+            headerDiv.appendChild(headerLeft);
+            headerDiv.appendChild(actionsDiv);
+            
+            // Create preview of first 3 movies
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'combo-preview';
+            
+            const previewMovies = combo.slice(0, 3);
+            previewMovies.forEach((film, idx) => {
+              const previewItem = document.createElement('div');
+              previewItem.className = 'combo-preview-item';
+              
+              const dot = document.createElement('span');
+              dot.className = 'preview-dot';
+              dot.style.backgroundColor = theaterColors[film.location];
+              
+              const filmName = document.createElement('span');
+              filmName.textContent = film.title;
+              
+              previewItem.appendChild(dot);
+              previewItem.appendChild(filmName);
+              
+              previewDiv.appendChild(previewItem);
+              
+              // Add separator except for last item
+              if (idx < previewMovies.length - 1) {
+                const separator = document.createElement('span');
+                separator.textContent = ' → ';
+                previewDiv.appendChild(separator);
+              }
+              
+              // Add ellipsis if there are more movies
+              if (idx === previewMovies.length - 1 && combo.length > 3) {
+                const more = document.createElement('span');
+                more.textContent = ` + ${combo.length - 3} more...`;
+                previewDiv.appendChild(more);
+              }
+            });
+            
+            headerLeft.appendChild(previewDiv);
+            
+            // Create combo body
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'combo-body';
+            
+            // Add timeline
+            bodyDiv.appendChild(createTimeline(combo));
+            
+            // Create list of movies
+            const movieListDiv = document.createElement('div');
+            movieListDiv.className = 'movie-list';
+            
+            combo.forEach((film, index) => {
+              // Add travel info if not the first film
+              if (index > 0) {
+                const prevFilm = combo[index - 1];
+                const travel = travelTime(prevFilm.location, film.location);
+                
+                if (travel > 0) {
+                  const travelDiv = document.createElement('div');
+                  travelDiv.className = 'travel-info';
+                  
+                  const travelIcon = document.createElement('span');
+                  travelIcon.textContent = icons.travel;
+                  
+                  const travelText = document.createElement('span');
+                  travelText.textContent = `${travel} min from ${prevFilm.location} to ${film.location}`;
+                  
+                  travelDiv.appendChild(travelIcon);
+                  travelDiv.appendChild(travelText);
+                  movieListDiv.appendChild(travelDiv);
+                }
+              }
+              
+              const movieItem = document.createElement('div');
+              movieItem.className = 'movie-item';
+              movieItem.style.borderLeftColor = theaterColors[film.location];
+              
+              const timeDiv = document.createElement('div');
+              timeDiv.className = 'movie-time';
+              timeDiv.textContent = `${formatTime(film.start)} - ${formatTime(film.end)}`;
+              
+              const detailsDiv = document.createElement('div');
+              detailsDiv.className = 'movie-details';
+              
+              const titleDiv = document.createElement('div');
+              titleDiv.className = 'movie-title';
+              titleDiv.textContent = film.title;
+              
+              // Add must-see tag if applicable
+              if (mustSeeMovies.includes(film.title)) {
+                const mustSeeTag = document.createElement('span');
+                mustSeeTag.className = 'must-see-tag';
+                mustSeeTag.textContent = 'Must-See!';
+                titleDiv.appendChild(mustSeeTag);
+              }
+              
+              const theaterDiv = document.createElement('div');
+              theaterDiv.className = 'movie-theater';
+              theaterDiv.textContent = `${film.location} • ${film.duration_minutes} min`;
+              
+              const linkDiv = document.createElement('div');
+              linkDiv.className = 'movie-link';
+              
+              const link = document.createElement('a');
+              link.href = film.url;
+              link.target = '_blank';
+              link.textContent = 'View Film Page';
+              
+              linkDiv.appendChild(link);
+              
+              detailsDiv.appendChild(titleDiv);
+              detailsDiv.appendChild(theaterDiv);
+              detailsDiv.appendChild(linkDiv);
+              
+              movieItem.appendChild(timeDiv);
+              movieItem.appendChild(detailsDiv);
+              
+              movieListDiv.appendChild(movieItem);
+            });
+            
+            bodyDiv.appendChild(movieListDiv);
+            
+            combinationDiv.appendChild(headerDiv);
+            combinationDiv.appendChild(bodyDiv);
+            
+            // Toggle expand on click
+            headerDiv.addEventListener('click', () => {
+              combinationDiv.classList.toggle('expanded');
+            });
+            
+            resultsContainer.appendChild(combinationDiv);
+          });
+          
+          // Add note if results were limited
+          if (result.length > 50) {
+            const note = document.createElement('div');
+            note.style.textAlign = 'center';
+            note.style.padding = '1em';
+            note.style.color = 'var(--gray-dark)';
+            note.textContent = `Showing top 50 out of ${result.length} possible combinations.`;
+            resultsContainer.appendChild(note);
+          }
+        }, 100);
+      }
+      
+      // Initialize with default values - Full Day option
+      document.querySelector('.quick-filter[data-start="10:00"]').click();
+    });
+  </script>
+</body>
+</html>
