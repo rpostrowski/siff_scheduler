@@ -580,7 +580,6 @@
               <option value="films">Number of Films</option>
               <option value="theaters">Number of Theaters</option>
               <option value="runtime">Total Runtime</option>
-              <option value="favorites">Favorites First</option>
             </select>
           </div>
         </div>
@@ -986,11 +985,6 @@
           button.classList.add('active');
         }
         saveFavorites();
-        
-        // Re-sort if sorting by favorites
-        if (document.getElementById('sortOptions').value === 'favorites') {
-          updateResults();
-        }
       }
       
       // Format runtime into hours and minutes
